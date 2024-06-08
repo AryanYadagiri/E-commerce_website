@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import ReactQueryProvider from "@/components/ReactQueryProvider";
 import Navbar from "../components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -19,9 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <ReactQueryProvider>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </ReactQueryProvider>
       </body>
     </html>
   );

@@ -51,6 +51,9 @@ const Navbar = () => {
               <a>Settings</a>
             </li>
             <li>
+              <Link href="./seller">Become seller</Link>
+            </li>
+            <li>
               <a>Logout</a>
             </li>
           </ul>
