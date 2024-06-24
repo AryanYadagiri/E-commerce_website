@@ -12,3 +12,104 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id            Int            @id @default(autoincrement())
+  name          String
+  number        Int
+  email         String         @unique
+  password      String
+  role          UserRole       @default(REGULAR)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  sellerProfile SellerProfile?
+  cartItems     CartItem[]
+  orders        Order[]
+}
+
+enum UserRole {
+  REGULAR
+  SELLER
+}
+
+model SellerProfile {
+  id              Int      @id @default(autoincrement())
+  userId          Int      @unique
+  user            User     @relation(fields: [userId], references: [id])
+  businessName    String
+  businessAddress String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Product {
+  id          Int               @id @default(autoincrement())
+  name        String
+  description String
+  price       Int
+  quantity    Int
+  categories  ProductCategory[]
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
+
+model Category {
+  id        Int               @id @default(autoincrement())
+  name      String
+  products  ProductCategory[]
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+}
+
+model ProductCategory {
+  productId  Int
+  categoryId Int
+  product    Product  @relation(fields: [productId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  @@id([productId, categoryId])
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  quantity  Int
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+model Order {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  totalAmount Int
+  status      OrderStatus @default(PENDING)
+  user        User        @relation(fields: [userId], references: [id])
+  orderItems  OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int
+  price     Int
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
