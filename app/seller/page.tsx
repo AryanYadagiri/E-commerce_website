@@ -5,7 +5,8 @@ import React from 'react'
 const page = () => {
   return (
     <div><SalesLineChart/>
-    <SellerProducts/></div>
+    <SellerProducts/>
+    </div>
   )
 }
 

@@ -1,20 +1,51 @@
+"use client"
 import React from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { fetchProducts, deleteProduct, Product } from "@/app/api/products";
+import ProductCard from "./ProductCard";
 
-const SellerProducts = () => {
+const SellerProducts: React.FC = () => {
+  const queryClient = useQueryClient();
+
+  const {
+    data: products,
+    isLoading,
+    isError,
+  } = useQuery<Product[]>({
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+  });
+
+  const deleteMutation = useMutation<void, unknown, number>({
+    mutationFn: deleteProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+  });
+
+  const handleDelete = (id: number) => {
+    deleteMutation.mutate(id);
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error loading products</div>;
+  }
+
   return (
-    <div className="card lg:card-side bg-base-100 shadow-xl">
-      <figure>
-        <img
-          src="https://img.daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg"
-          alt="Album"
-        />
-      </figure>
-      <div className="card-body">
-        <h2 className="card-title">New album is released!</h2>
-        <p>Click the button to listen on Spotiwhy app.</p>
-        <div className="card-actions justify-end">
-          <button className="btn btn-primary">Listen</button>
-        </div>
+    <div className="container mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {products?.map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            onUpdate={() => {}}
+            onDelete={handleDelete}
+          />
+        ))}
       </div>
     </div>
   );
