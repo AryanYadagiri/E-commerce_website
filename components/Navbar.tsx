@@ -1,16 +1,20 @@
+"use client"
 import React from "react";
 import Link from "next/link";
 import { TiShoppingCart } from "react-icons/ti";
+import { useAuth } from "@/app/api/hooks/useAuth";
 
 const Navbar = () => {
+  const { data: authStatus, isLoading } = useAuth();
+
   return (
     <div className="navbar bg-base-100">
       <div className="flex-1">
         <a className="btn btn-ghost text-xl">Shopi</a>
         <div className="ml-10 space-x-10">
-          <Link href=".">Home</Link>
-          <Link href="./about">About Us</Link>
-          <Link href="">Contact Us</Link>
+          <Link href="/">Home</Link>
+          <Link href="/about">About Us</Link>
+          <Link href="/contact">Contact Us</Link>
         </div>
       </div>
       <div></div>
@@ -36,26 +40,40 @@ const Navbar = () => {
               />
             </div>
           </div>
-
           <ul
             tabIndex={0}
             className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
           >
-            <li>
-              <a className="justify-between">
-                Profile
-                <span className="badge">New</span>
-              </a>
-            </li>
-            <li>
-              <a>Settings</a>
-            </li>
-            <li>
-              <Link href="./seller">Become seller</Link>
-            </li>
-            <li>
-              <a>Logout</a>
-            </li>
+            {isLoading ? (
+              <li>Loading...</li>
+            ) : authStatus?.isAuthenticated ? (
+              <>
+                <li>
+                  <a className="justify-between">
+                    Profile
+                    <span className="badge">New</span>
+                  </a>
+                </li>
+                <li>
+                  <a>Settings</a>
+                </li>
+                <li>
+                  <Link href="/seller">Become Seller</Link>
+                </li>
+                <li>
+                  <a>Logout</a>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link href="/login">Login</Link>
+                </li>
+                <li>
+                  <Link href="/signup">Sign Up</Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
