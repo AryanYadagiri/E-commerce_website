@@ -1,11 +1,14 @@
 "use client"
+
 import React from "react";
 import Link from "next/link";
 import { TiShoppingCart } from "react-icons/ti";
 import { useAuth } from "@/app/api/hooks/useAuth";
+import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
   const { data: authStatus, isLoading } = useAuth();
+  const router = useRouter();
 
   return (
     <div className="navbar bg-base-100">
