@@ -26,7 +26,7 @@ const authOptions: AuthOptions = {
 
         if (user && bcrypt.compareSync(credentials.password, user.password)) {
           return {
-            id: String(user.id),
+            id: user.id,
             name: user.name,
             email: user.email,
             role: user.role,
@@ -46,14 +46,14 @@ const authOptions: AuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.id = Number(user.id);
         token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id;
+      if (session.user && token) {
+        session.user.id = Number(token.id);
         session.user.role = token.role;
       }
       return session;
