@@ -17,14 +17,10 @@ const Login = () => {
       password: data.password,
     });
 
-      if (response.status === 200) {
-        router.push('/');
-      } else {
-        setLoginError('Invalid email or password');
-      }
-    } catch (error) {
-      setLoginError('Error during login');
-      console.error('Error during login', error);
+    if (result?.error) {
+      setLoginError('Invalid email or password');
+    } else {
+      router.push('/');
     }
   };
 
