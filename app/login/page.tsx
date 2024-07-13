@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import { signIn } from 'next-auth/react';
 
 const Login = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -11,15 +11,14 @@ const Login = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
 
   const onSubmit = async (data: any) => {
-    try {
-      const response = await axios.post('/api/auth/callback/credentials', {
-        email: data.email,
-        password: data.password,
-      });
+    const result = await signIn('credentials', {
+      redirect: false,
+      email: data.email,
+      password: data.password,
+    });
 
       if (response.status === 200) {
         router.push('/');
-        console.log(response.status);
       } else {
         setLoginError('Invalid email or password');
       }

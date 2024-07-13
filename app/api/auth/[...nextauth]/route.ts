@@ -28,7 +28,7 @@ const authOptions: AuthOptions = {
 
         if (user && bcrypt.compareSync(credentials.password, user.password)) {
           return {
-            id: user.id.toString(), 
+            id: user.id.toString(), // Convert id to string
             name: user.name,
             email: user.email,
             role: user.role,
