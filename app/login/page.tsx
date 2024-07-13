@@ -19,6 +19,7 @@ const Login = () => {
 
       if (response.status === 200) {
         router.push('/');
+        console.log(response.status);
       } else {
         setLoginError('Invalid email or password');
       }
