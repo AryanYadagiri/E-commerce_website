@@ -4,6 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { JWT } from "next-auth/jwt";
 import { AdapterUser } from "next-auth/adapters";
+import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
@@ -21,17 +22,28 @@ const authOptions: AuthOptions = {
       },
       async authorize(credentials, req) {
         if (!credentials) return null;
-
+      
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
 
+        const token = { jti: crypto.randomBytes(32).toString('hex') };
+      
         if (user && bcrypt.compareSync(credentials.password, user.password)) {
+          const session = await prisma.session.create({
+            data: {
+              userId: user.id,
+              sessionToken: token.jti as string,
+              expires: new Date(Date.now() + 60 * 60 * 1000), 
+            },
+          });
+      
           return {
             id: user.id.toString(), // Convert id to string
             name: user.name,
             email: user.email,
             role: user.role,
+            sessionId: session.id.toString(),
           };
         } else {
           return null;
@@ -64,17 +76,20 @@ const authOptions: AuthOptions = {
       session?: Session | undefined;
     }) {
       if (trigger === "signIn") {
+        const sessionToken = crypto.randomBytes(32).toString('hex'); // Generate a random session token
+    
         const session = await prisma.session.create({
           data: {
             userId: Number(user.id),
-            sessionToken: token.jti as string,
-            expires: new Date(Date.now() + 60 * 60 * 1000), 
+            sessionToken,
+            expires: new Date(Date.now() + 60 * 60 * 1000),
           },
         });
-
+    
         token.sessionId = session.id.toString();
+        token.jti = sessionToken;
       }
-
+    
       return token;
     },
   },
