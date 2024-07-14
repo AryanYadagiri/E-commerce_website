@@ -1,14 +1,13 @@
-"use client"
+"use client";
 
 import React from "react";
 import Link from "next/link";
 import { TiShoppingCart } from "react-icons/ti";
-import { useAuth } from "@/app/api/hooks/useAuth";
-import { useRouter } from 'next/navigation';
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 const Navbar = () => {
-  const { data: authStatus, isLoading } = useAuth();
-  const router = useRouter();
+  const { data: session, status } = useSession();
 
   return (
     <div className="navbar bg-base-100">
@@ -47,15 +46,15 @@ const Navbar = () => {
             tabIndex={0}
             className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
           >
-            {isLoading ? (
+            {status === "loading" ? (
               <li>Loading...</li>
-            ) : authStatus?.isAuthenticated ? (
+            ) : session ? (
               <>
                 <li>
-                  <a className="justify-between">
+                  <Link href="/profile">
                     Profile
                     <span className="badge">New</span>
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <a>Settings</a>
@@ -64,7 +63,7 @@ const Navbar = () => {
                   <Link href="/seller">Become Seller</Link>
                 </li>
                 <li>
-                  <a>Logout</a>
+                  <a onClick={() => signOut()}>Logout</a>
                 </li>
               </>
             ) : (
