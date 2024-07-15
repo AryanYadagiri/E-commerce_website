@@ -53,20 +53,20 @@ model Session {
 }
 
 model Account {
-  id                 String @id @default(cuid())
+  id                 String  @id @default(cuid())
   userId             Int
   type               String
   provider           String
   providerAccountId  String
-  refresh_token      String? 
-  access_token       String? 
-  expires_at         Int?    
-  token_type         String? 
-  scope              String? 
-  id_token           String? 
-  session_state      String? 
-  oauth_token_secret String? 
-  oauth_token        String? 
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+  oauth_token_secret String?
+  oauth_token        String?
   user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
@@ -75,7 +75,7 @@ model Account {
 model VerificationToken {
   identifier String
   token      String   @unique
-  expires    DateTime 
+  expires    DateTime
 
   @@unique([identifier, token])
 }
@@ -86,6 +86,8 @@ model Product {
   description String
   price       Int
   quantity    Int
+  imageUrl    String?
+  imageAlt    String?
   categories  ProductCategory[]
   cartItems   CartItem[]
   orderItems  OrderItem[]

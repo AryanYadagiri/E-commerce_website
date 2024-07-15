@@ -60,7 +60,7 @@ const Navbar = () => {
                   <a>Settings</a>
                 </li>
                 <li>
-                  <Link href="/seller">Become Seller</Link>
+                  <Link href="/seller-signup">Become Seller</Link>
                 </li>
                 <li>
                   <a onClick={() => signOut()}>Logout</a>

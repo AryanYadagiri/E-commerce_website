@@ -1,17 +1,21 @@
-"use client"; // Add this line at the top
+"use client";
 
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import React from "react";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const SellerSignUp = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const router = useRouter();
 
   const onSubmit = async (data: any) => {
     try {
-      await axios.post('/api/auth/signup/seller', {
+      await axios.post("/api/auth/signup/seller", {
         name: data.name,
         number: data.number,
         email: data.email,
@@ -19,9 +23,9 @@ const SellerSignUp = () => {
         businessName: data.businessName,
         businessAddress: data.businessAddress,
       });
-      router.push('/login');
+      router.push("/login");
     } catch (error) {
-      console.error('Error during sign up', error);
+      console.error("Error during sign up", error);
     }
   };
 
@@ -32,84 +36,117 @@ const SellerSignUp = () => {
           <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
             Create a seller account
           </h1>
-          <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit(onSubmit)}>
+          <form
+            className="space-y-4 md:space-y-6"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <div>
-              <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              <label
+                htmlFor="name"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
                 Your full name
               </label>
               <input
                 type="text"
                 id="name"
-                {...register('name', { required: true })}
+                {...register("name", { required: true })}
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Emelia Erickson"
               />
-              {errors.name && <span className="text-red-500">This field is required</span>}
+              {errors.name && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
             <div>
-              <label htmlFor="number" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              <label
+                htmlFor="number"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
                 Phone Number
               </label>
               <input
                 type="text"
                 id="number"
-                {...register('number', { required: true })}
+                {...register("number", { required: true })}
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="123-456-7890"
               />
-              {errors.number && <span className="text-red-500">This field is required</span>}
+              {errors.number && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
             <div>
-              <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              <label
+                htmlFor="email"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
                 Email
               </label>
               <input
                 type="email"
                 id="email"
-                {...register('email', { required: true })}
+                {...register("email", { required: true })}
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="emelia@example.com"
               />
-              {errors.email && <span className="text-red-500">This field is required</span>}
+              {errors.email && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
             <div>
-              <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              <label
+                htmlFor="password"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
                 Password
               </label>
               <input
                 type="password"
                 id="password"
-                {...register('password', { required: true })}
+                {...register("password", { required: true })}
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="••••••••"
               />
-              {errors.password && <span className="text-red-500">This field is required</span>}
+              {errors.password && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
             <div>
-              <label htmlFor="businessName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              <label
+                htmlFor="businessName"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
                 Business Name
               </label>
               <input
                 type="text"
                 id="businessName"
-                {...register('businessName', { required: true })}
+                {...register("businessName", { required: true })}
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Your Business Name"
               />
-              {errors.businessName && <span className="text-red-500">This field is required</span>}
+              {errors.businessName && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
             <div>
-              <label htmlFor="businessAddress" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              <label
+                htmlFor="businessAddress"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
                 Business Address
               </label>
               <input
                 type="text"
                 id="businessAddress"
-                {...register('businessAddress', { required: true })}
+                {...register("businessAddress", { required: true })}
                 className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="123 Business St, City, Country"
               />
-              {errors.businessAddress && <span className="text-red-500">This field is required</span>}
+              {errors.businessAddress && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
             <button
               type="submit"
@@ -118,7 +155,13 @@ const SellerSignUp = () => {
               Create a seller account
             </button>
             <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-              Already have an account? <a className="font-medium text-blue-600 hover:underline dark:text-blue-500" href="/login">Sign in here</a>
+              Already have an account?{" "}
+              <a
+                className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                href="/login"
+              >
+                Sign in here
+              </a>
             </p>
           </form>
         </div>
