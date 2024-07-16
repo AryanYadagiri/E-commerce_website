@@ -20,10 +20,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onDelete }
     setIsEditing(false);
   };
 
+  const handleSubmit = (updatedProduct: Omit<Product, "id">) => {
+    const productWithId: Product = {...updatedProduct, id: product.id };
+    onUpdate(productWithId);
+    setIsEditing(false);
+  };
+
   return (
     <div className="card lg:card-side bg-base-100 shadow-xl">
       {isEditing ? (
-        <ProductForm initialProduct={product} onClose={handleCloseForm} />
+        <ProductForm initialProduct={product} onClose={handleCloseForm} onSubmit={handleSubmit} />
       ) : (
         <>
           <figure>

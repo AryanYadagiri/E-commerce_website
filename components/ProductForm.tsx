@@ -4,8 +4,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProduct, updateProduct, Product } from "@/app/api/products";
 
 interface ProductFormProps {
-  initialProduct?: Product;
   onClose: () => void;
+  initialProduct?: Product;
+  onSubmit: (product: Omit<Product, "id">) => void;
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({ initialProduct, onClose }) => {
