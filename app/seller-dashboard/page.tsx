@@ -5,7 +5,7 @@ import React from "react";
 const SellerDashboard = () => {
   return (
     <div>
-      <SalesLineChart />
+      <SalesLineChart/>
       <SellerProducts />
     </div>
   );

@@ -27,7 +27,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onDelete }
       ) : (
         <>
           <figure>
-            <img src="https://img.daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg" alt="Product" />
+            <img src={product.imageUrl} alt={product.imageAlt} />
           </figure>
           <div className="card-body">
             <h2 className="card-title">{product.name}</h2>

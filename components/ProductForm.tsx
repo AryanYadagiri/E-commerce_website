@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProduct, updateProduct, Product } from "@/app/api/products";
 
@@ -7,20 +8,21 @@ interface ProductFormProps {
   onClose: () => void;
 }
 
-const ProductForm: React.FC<ProductFormProps> = ({
-  initialProduct,
-  onClose,
-}) => {
-  const [product, setProduct] = useState<Product>({
-    id: initialProduct?.id || 0,
-    name: initialProduct?.name || "",
-    description: initialProduct?.description || "",
-    price: initialProduct?.price || 0,
-    quantity: initialProduct?.quantity || 0,
-  });
-
+const ProductForm: React.FC<ProductFormProps> = ({ initialProduct, onClose }) => {
   const queryClient = useQueryClient();
   const isEditing = Boolean(initialProduct);
+
+  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<Product>({
+    defaultValues: initialProduct || {
+      id: 0,
+      name: "",
+      description: "",
+      price: 0,
+      quantity: 0,
+      imageUrl: "",
+      imageAlt: "",
+    },
+  });
 
   const createMutation = useMutation({
     mutationFn: createProduct,
@@ -38,76 +40,81 @@ const ProductForm: React.FC<ProductFormProps> = ({
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = (data: Product) => {
     if (isEditing) {
-      updateMutation.mutate(product);
+      updateMutation.mutate(data);
     } else {
-      createMutation.mutate(product);
+      createMutation.mutate(data);
     }
   };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const imageUrl = URL.createObjectURL(file);
+      setValue("imageUrl", imageUrl);
+      setValue("imageAlt", file.name);
+    }
+  };
+
+  const imageUrl = watch("imageUrl");
 
   return (
     <div className="card lg:card-side bg-base-100 shadow-xl">
       <figure>
         <img
-          src="https://img.daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg"
-          alt="Product"
+          src={imageUrl}
+          alt={watch("imageAlt")}
         />
       </figure>
       <div className="card-body">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <h2 className="card-title">
             {isEditing ? "Update Product" : "Create Product"}
           </h2>
           <div className="form-control">
+            <label className="label">Image</label>
+            <input
+              type="file"
+              onChange={handleImageChange}
+              className="file-input file-input-bordered"
+            />
+          </div>
+          <div className="form-control">
             <label className="label">Name</label>
             <input
               type="text"
-              value={product.name}
-              onChange={(e) => setProduct({ ...product, name: e.target.value })}
+              {...register("name", { required: "Name is required" })}
               className="input input-bordered"
-              required
             />
+            {errors.name && <p>{errors.name.message}</p>}
           </div>
           <div className="form-control">
             <label className="label">Description</label>
             <input
               type="text"
-              value={product.description}
-              onChange={(e) =>
-                setProduct({ ...product, description: e.target.value })
-              }
+              {...register("description", { required: "Description is required" })}
               className="input input-bordered"
-              required
             />
+            {errors.description && <p>{errors.description.message}</p>}
           </div>
           <div className="form-control">
             <label className="label">Price</label>
             <input
               type="number"
-              value={product.price}
-              onChange={(e) =>
-                setProduct({ ...product, price: parseFloat(e.target.value) })
-              }
+              {...register("price", { required: "Price is required", valueAsNumber: true })}
               className="input input-bordered"
-              required
             />
+            {errors.price && <p>{errors.price.message}</p>}
           </div>
           <div className="form-control">
             <label className="label">Quantity</label>
             <input
               type="number"
-              value={product.quantity}
-              onChange={(e) =>
-                setProduct({
-                  ...product,
-                  quantity: parseInt(e.target.value, 10),
-                })
-              }
+              {...register("quantity", { required: "Quantity is required", valueAsNumber: true })}
               className="input input-bordered"
-              required
             />
+            {errors.quantity && <p>{errors.quantity.message}</p>}
           </div>
           <div className="card-actions justify-end">
             <button type="submit" className="btn btn-primary">

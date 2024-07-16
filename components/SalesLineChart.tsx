@@ -12,7 +12,6 @@ import {
   Legend,
 } from 'chart.js';
 
-// Register the necessary components of chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -40,7 +39,7 @@ const options = {
   responsive: true,
   plugins: {
     legend: {
-      position: 'top' as const, // Correct typing for position
+      position: 'top' as const,
     },
     title: {
       display: true,
@@ -51,7 +50,7 @@ const options = {
 
 const SalesLineChart = () => {
   return (
-    <div>
+    <div className="w-4/5 mx-auto">
       <Line data={data} options={options} />
     </div>
   );
