@@ -48,9 +48,13 @@ const options = {
   },
 };
 
-const SalesLineChart = () => {
+interface ClassNameProps {
+  className?: string;
+}
+
+const SalesLineChart: React.FC<ClassNameProps> = ({ className }) => {
   return (
-    <div className="w-4/5 mx-auto">
+    <div className={className}>
       <Line data={data} options={options} />
     </div>
   );

@@ -1,16 +1,9 @@
-import NextAuth, {
-  AuthOptions,
-  User,
-  Account,
-  Profile,
-  Session,
-} from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { JWT } from "next-auth/jwt";
-import { AdapterUser } from "next-auth/adapters";
 import crypto from "crypto";
+import { UserRole } from "@prisma/client";
 
 const authOptions: AuthOptions = {
   providers: [
@@ -25,32 +18,42 @@ const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        if (!credentials) return null;
+        if (!credentials) {
+          throw new Error("No credentials provided");
+        }
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
 
-        const token = { jti: crypto.randomBytes(32).toString("hex") };
+        if (!user) {
+          throw new Error("User not found");
+        }
 
-        if (user && bcrypt.compareSync(credentials.password, user.password)) {
-          const session = await prisma.session.create({
-            data: {
-              userId: user.id,
-              sessionToken: token.jti as string,
-              expires: new Date(Date.now() + 60 * 60 * 1000),
-            },
-          });
+        const isValidPassword = bcrypt.compareSync(credentials.password, user.password);
 
+        if (!isValidPassword) {
+          throw new Error("Invalid password");
+        }
+
+        if (user.role === UserRole.SELLER) {
           return {
-            id: user.id.toString(), // Convert id to string
+            id: user.id.toString(),
             name: user.name,
             email: user.email,
             role: user.role,
-            sessionId: session.id.toString(),
+            sessionId: null,
+          };
+        } else if (user.role === UserRole.REGULAR) {
+          return {
+            id: user.id.toString(),
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            sessionId: null,
           };
         } else {
-          return null;
+          throw new Error("Invalid user role");
         }
       },
     }),
@@ -62,25 +65,9 @@ const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({
-      token,
-      user,
-      account,
-      profile,
-      trigger,
-      isNewUser,
-      session,
-    }: {
-      token: JWT;
-      user: User | AdapterUser;
-      account: Account | null;
-      profile?: Profile | undefined;
-      trigger?: "signIn" | "signUp" | "update" | undefined;
-      isNewUser?: boolean | undefined;
-      session?: Session | undefined;
-    }) {
-      if (trigger === "signIn") {
-        const sessionToken = crypto.randomBytes(32).toString("hex"); // Generate a random session token
+    async jwt({ token, user, session }) {
+      if (session) {
+        const sessionToken = crypto.randomBytes(32).toString("hex");
 
         const session = await prisma.session.create({
           data: {

@@ -5,7 +5,11 @@ import { fetchProducts, deleteProduct, createProduct, Product } from "@/app/api/
 import ProductCard from "./ProductCard";
 import ProductForm from "./ProductForm";
 
-const SellerProducts: React.FC = () => {
+interface ClassNameProps {
+  className?: string;
+}
+
+const SellerProducts: React.FC<ClassNameProps> = ({className}) => {
   const queryClient = useQueryClient();
 
   const {
@@ -51,23 +55,23 @@ const SellerProducts: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {products?.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onUpdate={() => {}}
-            onDelete={handleDelete}
-          />
-        ))}
-      </div>
-      {isCreating? (
+    <div className={`container mx-auto ${className}`}>
+      <button className="btn btn-primary mb-10" onClick={() => setIsCreating(true)}>
+        Create New Product
+      </button>
+      {isCreating ? (
         <ProductForm onClose={() => setIsCreating(false)} initialProduct={undefined} onSubmit={handleCreate} />
       ) : (
-        <button className="btn btn-primary" onClick={() => setIsCreating(true)}>
-          Create New Product
-        </button>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {products?.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onUpdate={() => {}}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
       )}
     </div>
   );

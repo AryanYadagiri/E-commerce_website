@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     await prisma.user.create({
       data: {
         name,
-        number,
+        number: parseInt(number),
         email,
         password: hashedPassword,
         role: "SELLER",
@@ -41,6 +41,7 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
+    console.log(error);
     const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
       { message: "Internal Server Error", error: message },

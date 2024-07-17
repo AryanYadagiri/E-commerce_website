@@ -4,6 +4,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import Link from "next/link";
 
 const SellerSignUp = () => {
   const {
@@ -15,7 +16,7 @@ const SellerSignUp = () => {
 
   const onSubmit = async (data: any) => {
     try {
-      await axios.post("/api/auth/signup/seller", {
+      await axios.post("/api/auth/signup-seller", {
         name: data.name,
         number: data.number,
         email: data.email,
@@ -23,7 +24,7 @@ const SellerSignUp = () => {
         businessName: data.businessName,
         businessAddress: data.businessAddress,
       });
-      router.push("/login");
+      router.push("/seller-login");
     } catch (error) {
       console.error("Error during sign up", error);
     }
@@ -156,12 +157,12 @@ const SellerSignUp = () => {
             </button>
             <p className="text-sm font-light text-gray-500 dark:text-gray-400">
               Already have an account?{" "}
-              <a
+              <Link
                 className="font-medium text-blue-600 hover:underline dark:text-blue-500"
-                href="/login"
+                href="/seller-login"
               >
                 Sign in here
-              </a>
+              </Link>
             </p>
           </form>
         </div>

@@ -61,7 +61,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialProduct, onClose }) =>
   const imageUrl = watch("imageUrl");
 
   return (
-    <div className="card lg:card-side bg-base-100 shadow-xl">
+    <div className={`card lg:card-side bg-base-100 shadow-xl ${isEditing? 'w-full' : 'w-2/4'}`}>
       <figure>
         <img
           src={imageUrl}
@@ -118,12 +118,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialProduct, onClose }) =>
             {errors.quantity && <p>{errors.quantity.message}</p>}
           </div>
           <div className="card-actions justify-end">
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary mt-5">
               {isEditing ? "Update" : "Create"}
             </button>
             <button
               type="button"
-              className="btn btn-secondary"
+              className="btn btn-secondary mt-5"
               onClick={onClose}
             >
               Cancel

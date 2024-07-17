@@ -5,8 +5,8 @@ import React from "react";
 const SellerDashboard = () => {
   return (
     <div>
-      <SalesLineChart/>
-      <SellerProducts />
+      <SalesLineChart className="w-4/5 mx-auto"/>
+      <SellerProducts className="my-14"/>
     </div>
   );
 };
