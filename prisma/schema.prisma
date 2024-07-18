@@ -50,6 +50,7 @@ model Session {
   userId       Int
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role         UserRole @default(REGULAR)
 }
 
 model Account {

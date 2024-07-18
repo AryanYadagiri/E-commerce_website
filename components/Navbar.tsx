@@ -5,30 +5,45 @@ import Link from "next/link";
 import { TiShoppingCart } from "react-icons/ti";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
+import { UserRole } from "@prisma/client";
+import { Session } from "next-auth";
+
+interface CustomSession extends Session {
+  role: UserRole;
+}
 
 const Navbar = () => {
   const { data: session, status } = useSession();
+
+  const customSession = session as CustomSession;
+
+  const isSeller = customSession?.role === UserRole.SELLER;
 
   return (
     <div className="navbar bg-base-100">
       <div className="flex-1">
         <a className="btn btn-ghost text-xl">Shopi</a>
         <div className="ml-10 space-x-10">
-          <Link href="/">Home</Link>
+          <Link href={isSeller ? "/seller-dashboard" : "/"}>
+            {isSeller ? "Dashboard" : "Home"}
+          </Link>
           <Link href="/about">About Us</Link>
           <Link href="/contact">Contact Us</Link>
         </div>
       </div>
-      <div></div>
-      <div className="flex-none gap-2">
-        <div className="form-control">
-          <input
-            type="text"
-            placeholder="Search"
-            className="input input-bordered w-24 md:w-auto"
-          />
+      {!isSeller && (
+        <div className="flex-none gap-2">
+          <div className="form-control">
+            <input
+              type="text"
+              placeholder="Search"
+              className="input input-bordered w-24 md:w-auto"
+            />
+          </div>
+          <TiShoppingCart className="text-5xl mx-2" />
         </div>
-        <TiShoppingCart className="text-5xl mx-2" />
+      )}
+      <div className="flex-none gap-2">
         <div className="dropdown dropdown-end">
           <div
             tabIndex={0}
@@ -49,23 +64,37 @@ const Navbar = () => {
             {status === "loading" ? (
               <li>Loading...</li>
             ) : session ? (
-              <>
-                <li>
-                  <Link href="/profile">
-                    Profile
-                    <span className="badge">New</span>
-                  </Link>
-                </li>
-                <li>
-                  <a>Settings</a>
-                </li>
-                <li>
-                  <Link href="/seller-signup">Become Seller</Link>
-                </li>
-                <li>
-                  <a onClick={() => signOut()}>Logout</a>
-                </li>
-              </>
+              isSeller ? (
+                <>
+                  <li>
+                    <Link href="/profile">
+                      Profile
+                      <span className="badge">New</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <a onClick={() => signOut()}>Logout</a>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <Link href="/profile">
+                      Profile
+                      <span className="badge">New</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/settings">Settings</Link>
+                  </li>
+                  <li>
+                    <Link href="/seller-signup">Become seller</Link>
+                  </li>
+                  <li>
+                    <a onClick={() => signOut()}>Logout</a>
+                  </li>
+                </>
+              )
             ) : (
               <>
                 <li>
