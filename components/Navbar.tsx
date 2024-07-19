@@ -19,6 +19,8 @@ const Navbar = () => {
 
   const isSeller = customSession?.role === UserRole.SELLER;
 
+  console.log(customSession)
+
   return (
     <div className="navbar bg-base-100">
       <div className="flex-1">
