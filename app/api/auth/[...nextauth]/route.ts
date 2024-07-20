@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
+import { JWT } from "next-auth/jwt";
 
 const authOptions: AuthOptions = {
   providers: [
@@ -34,8 +35,11 @@ const authOptions: AuthOptions = {
         if (!isValidPassword) {
           throw new Error("Invalid password");
         }
-
-        return user;
+        return {
+          id: user.id,
+          name: user.name,
+          role: user.role,
+        };
       },
     }),
   ],
@@ -46,13 +50,20 @@ const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, user }) {
-      token.id = user.id;
-      token.name = user.name;
-      token.email = user.email;
-      token.role = user.role;
-      token.jti = crypto.randomBytes(32).toString("hex");
+    jwt({ token, user }) {
+      if (user) {
+        token.role = user.role;
+      }
+      console.log("token: ", token)
       return token;
+    },
+
+    session({ session, token }) {
+      if (token && session.user) {
+        session.user.role = token.role;
+      }
+      console.log("session: ", session)
+      return session
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
