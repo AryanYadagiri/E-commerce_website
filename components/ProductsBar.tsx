@@ -11,9 +11,13 @@ import { MdOutlineSubtitles } from "react-icons/md";
 
 import React from "react";
 
-const ProductsBar = () => {
+interface Props {
+  classname?: String;
+}
+
+const ProductsBar:React.FC<Props> = ({classname}) => {
   return (
-    <div className="flex px-16 py-2 space-x-11">
+    <div className={`flex justify-center px-16 py-2 space-x-12 ${classname}`}>
       <Link href="" className="grid justify-items-center">
         <FaShoppingBasket className="text-2xl" />
         <p>Grocery</p>
@@ -53,5 +57,5 @@ const ProductsBar = () => {
     </div>
   );
 };
-
+// space-x-4 md:space-x-6 lg:space-x-8
 export default ProductsBar;

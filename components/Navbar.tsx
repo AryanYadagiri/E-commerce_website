@@ -5,19 +5,11 @@ import Link from "next/link";
 import { TiShoppingCart } from "react-icons/ti";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
-import { UserRole } from "@prisma/client";
-import { Session } from "next-auth";
-
-interface CustomSession extends Session {
-  role: UserRole;
-}
 
 const Navbar = () => {
+
   const { data: session, status } = useSession();
-
-  const customSession = session as CustomSession;
-
-  const isSeller = customSession?.role === UserRole.SELLER;
+  const isSeller = session?.user.role === "SELLER"
 
   return (
     <div className="navbar bg-base-100">
@@ -73,7 +65,7 @@ const Navbar = () => {
                     </Link>
                   </li>
                   <li>
-                    <a onClick={() => signOut()}>Logout</a>
+                    <a onClick={()=>signOut({ callbackUrl: '/' })}>Logout</a>
                   </li>
                 </>
               ) : (
@@ -91,7 +83,7 @@ const Navbar = () => {
                     <Link href="/seller-signup">Become seller</Link>
                   </li>
                   <li>
-                    <a onClick={() => signOut()}>Logout</a>
+                    <a onClick={()=>signOut({ callbackUrl: '/' })}>Logout</a>
                   </li>
                 </>
               )

@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { JWT } from "next-auth/jwt";
 
-const authOptions: AuthOptions = {
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -35,6 +35,7 @@ const authOptions: AuthOptions = {
         if (!isValidPassword) {
           throw new Error("Invalid password");
         }
+        
         return {
           id: user.id,
           name: user.name,
@@ -50,19 +51,33 @@ const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    jwt({ token, user }) {
+   async jwt({ token, user }) {
       if (user) {
         token.role = user.role;
       }
-      console.log("token: ", token)
       return token;
     },
 
-    session({ session, token }) {
+    async session({ session, token, user }) {
       if (token && session.user) {
         session.user.role = token.role;
+        if (token.role === "SELLER") {
+
+          const sellerProfile =  prisma.sellerProfile.findUnique({
+
+            where: { userId: user.id },
+
+          });
+
+
+          if (sellerProfile) {
+
+            session.sellerProfile.id = sellerProfile.id
+          }
+
+        }
       }
-      console.log("session: ", session)
+
       return session
     },
   },

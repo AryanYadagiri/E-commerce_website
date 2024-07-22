@@ -12,6 +12,9 @@ declare module "next-auth" {
     user: {
       id: string,
       role: UserRole
+    },
+    sellerProfile:{
+      id: string,
     } & DefaultSession
   }
 }
