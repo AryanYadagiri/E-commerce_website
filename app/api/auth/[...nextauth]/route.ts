@@ -30,12 +30,15 @@ export const authOptions: AuthOptions = {
           throw new Error("User not found");
         }
 
-        const isValidPassword = bcrypt.compareSync(credentials.password, user.password);
+        const isValidPassword = bcrypt.compareSync(
+          credentials.password,
+          user.password
+        );
 
         if (!isValidPassword) {
           throw new Error("Invalid password");
         }
-        
+
         return {
           id: user.id,
           name: user.name,
@@ -51,34 +54,27 @@ export const authOptions: AuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-   async jwt({ token, user }) {
+    async jwt({ token, user }) {
       if (user) {
         token.role = user.role;
       }
+      // if (token.role === "SELLER") {
+      //   const sellerProfile = await prisma.sellerProfile.findUnique({
+      //     where: { userId: token.sub },
+      //   });
+      //   console.log(sellerProfile)
+      //   // if (sellerProfile) {
+      //   //   session.sellerProfile.id = sellerProfile.id;
+      //   // }
+      // }
       return token;
     },
 
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       if (token && session.user) {
         session.user.role = token.role;
-        if (token.role === "SELLER") {
-
-          const sellerProfile =  prisma.sellerProfile.findUnique({
-
-            where: { userId: user.id },
-
-          });
-
-
-          if (sellerProfile) {
-
-            session.sellerProfile.id = sellerProfile.id
-          }
-
-        }
       }
-
-      return session
+      return session;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
