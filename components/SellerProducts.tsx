@@ -62,7 +62,7 @@ const SellerProducts: React.FC<ClassNameProps> = ({className}) => {
       {isCreating ? (
         <ProductForm onClose={() => setIsCreating(false)} initialProduct={undefined} onSubmit={handleCreate} />
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="flex flex-col w-1/3">
           {products?.map((product) => (
             <ProductCard
               key={product.id}
