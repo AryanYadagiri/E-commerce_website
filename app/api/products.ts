@@ -8,6 +8,7 @@ export interface Product {
   quantity: number;
   imageUrl: string;
   imageAlt: string;
+  sellerProfileId?: string;
 }
 
 export const fetchProducts = async (): Promise<Product[]> => {

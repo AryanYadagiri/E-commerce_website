@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProduct, updateProduct, Product } from "@/app/api/products";
+import { useSession } from "next-auth/react";
 
 interface ProductFormProps {
   onClose: () => void;
@@ -11,22 +12,24 @@ interface ProductFormProps {
 
 const ProductForm: React.FC<ProductFormProps> = ({ initialProduct, onClose }) => {
   const queryClient = useQueryClient();
+  const session = useSession()
   const isEditing = Boolean(initialProduct);
+  const sellerProfileId = session.status === 'authenticated'? session.data.user.sellerProfileId : undefined;
 
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<Product>({
     defaultValues: initialProduct || {
-      id: 0,
       name: "",
       description: "",
       price: 0,
       quantity: 0,
       imageUrl: "",
       imageAlt: "",
+      sellerProfileId: sellerProfileId
     },
   });
 
   const createMutation = useMutation({
-    mutationFn: createProduct,
+    mutationFn: (data: Product) => createProduct({ ...data, sellerProfileId: sellerProfileId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       onClose();
@@ -34,7 +37,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialProduct, onClose }) =>
   });
 
   const updateMutation = useMutation({
-    mutationFn: updateProduct,
+    mutationFn: (data: Product) => updateProduct({ ...data, sellerProfileId: sellerProfileId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       onClose();
@@ -59,9 +62,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialProduct, onClose }) =>
   };
 
   const imageUrl = watch("imageUrl");
-
+ 
   return (
     <div className={`card lg:card-side bg-base-100 shadow-xl ${isEditing? 'w-full' : 'w-2/4'}`}>
+      <div>{JSON.stringify(session.data?.user.sellerProfileId)}</div>
       <figure>
         <img
           src={imageUrl}

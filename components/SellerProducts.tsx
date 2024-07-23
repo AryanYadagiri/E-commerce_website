@@ -76,5 +76,5 @@ const SellerProducts: React.FC<ClassNameProps> = ({className}) => {
     </div>
   );
 };
-
+// flex flex-col
 export default SellerProducts;

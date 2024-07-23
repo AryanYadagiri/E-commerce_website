@@ -12,14 +12,15 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const { name, description, price, quantity } = await request.json();
-  if (!name || !description || price === undefined || quantity === undefined) {
+  const { name, description, price, quantity, sellerProfileId } = await request.json();
+  if (!name || !description || price === undefined || quantity === undefined || !sellerProfileId) {
+    console.log(name, description, price, quantity, sellerProfileId)
     return NextResponse.json(
       { error: "Missing required fields" },
       { status: 400 }
     );
   }
-
+  console.log(name, description, price, quantity, sellerProfileId)
   try {
     await prisma.product.create({
       data: {
@@ -27,6 +28,7 @@ export async function POST(request: NextRequest) {
         description,
         price: parseFloat(price),
         quantity: parseInt(quantity),
+        sellerProfileId,
       },
     });
 

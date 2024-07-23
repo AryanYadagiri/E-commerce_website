@@ -3,7 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
-import { JWT } from "next-auth/jwt";
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -58,21 +57,20 @@ export const authOptions: AuthOptions = {
       if (user) {
         token.role = user.role;
       }
-      // if (token.role === "SELLER") {
-      //   const sellerProfile = await prisma.sellerProfile.findUnique({
-      //     where: { userId: token.sub },
-      //   });
-      //   console.log(sellerProfile)
-      //   // if (sellerProfile) {
-      //   //   session.sellerProfile.id = sellerProfile.id;
-      //   // }
-      // }
       return token;
     },
 
     async session({ session, token }) {
       if (token && session.user) {
         session.user.role = token.role;
+        if (token.role = "SELLER") {
+          const sellerProfile = await prisma.sellerProfile.findUnique({
+            where: { userId: token.sub },
+          });
+          if (sellerProfile) {
+            session.user.sellerProfileId = sellerProfile.id;
+          }
+        }
       }
       return session;
     },
