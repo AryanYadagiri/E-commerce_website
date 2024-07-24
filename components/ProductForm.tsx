@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProduct, updateProduct, Product } from "@/app/api/products";
 import { useSession } from "next-auth/react";
+import axios from "axios";
 
 interface ProductFormProps {
   onClose: () => void;
@@ -14,7 +15,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialProduct, onClose }) =>
   const queryClient = useQueryClient();
   const session = useSession()
   const isEditing = Boolean(initialProduct);
-  const sellerProfileId = session.status === 'authenticated'? session.data.user.sellerProfileId : undefined;
+  const sellerProfileId = session.status === 'authenticated' ? session.data.user.sellerProfileId : undefined;
+  const [image, setImage] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<Product>({
     defaultValues: initialProduct || {
@@ -44,16 +47,17 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialProduct, onClose }) =>
     },
   });
 
-  const onSubmit = (data: Product) => {
-    if (isEditing) {
-      updateMutation.mutate(data);
-    } else {
-      createMutation.mutate(data);
-    }
-  };
+  // const onSubmit = (data: Product) => {
+  //   if (isEditing) {
+  //     updateMutation.mutate(data);
+  //   } else {
+  //     createMutation.mutate(data);
+  //   }
+  // };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]);
       const file = e.target.files[0];
       const imageUrl = URL.createObjectURL(file);
       setValue("imageUrl", imageUrl);
@@ -61,10 +65,36 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialProduct, onClose }) =>
     }
   };
 
+  const handleImageUpload = async () => {
+    if (image) {
+      setUploading(true);
+      const formData = new FormData();
+      formData.append("file", image);
+      formData.append("upload_preset", "your-upload-preset");
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/your-cloud-name/image/upload",
+        formData
+      );
+      const imageUrl = response.data.secure_url;
+      setValue("imageUrl", imageUrl);
+      setUploading(false);
+    }
+  };
+
+
+  const onSubmit = async (data: Product) => {
+    await handleImageUpload();
+    if (isEditing) {
+      updateMutation.mutate(data);
+    } else {
+      createMutation.mutate(data);
+    }
+  };
+
   const imageUrl = watch("imageUrl");
- 
+
   return (
-    <div className={`card lg:card-side bg-base-100 shadow-xl ${isEditing? 'w-full' : 'w-2/4'}`}>
+    <div className={`card lg:card-side bg-base-100 shadow-xl ${isEditing ? 'w-full' : 'w-2/4'}`}>
       <div>{JSON.stringify(session.data?.user.sellerProfileId)}</div>
       <figure>
         <img
