@@ -1,17 +1,23 @@
 import React from 'react'
+import { Product } from '@/app/api/products'
 
-const Card = () => {
+interface CardProps {
+  product: Product;
+}
+
+const Card: React.FC<CardProps> = ({product}) => {
   return (
     <div className="card w-96 bg-base-100 shadow-xl">
-  <figure><img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure>
-  <div className="card-body">
-    <h2 className="card-title">Shoes!</h2>
-    <p>If a dog chews shoes whose shoes does he choose?</p>
-    <div className="card-actions justify-end">
-      <button className="btn btn-primary">Buy Now</button>
+      <figure><img src={product.imageUrl} alt={product.imageAlt} /></figure>
+      <div className="card-body">
+        <h2 className="card-title">{product.name}</h2>
+        <p>{product.description}</p>
+        <p>{product.price}</p>
+        <div className="card-actions justify-end">
+          <button className="btn btn-primary">Buy Now</button>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
   )
 }
 

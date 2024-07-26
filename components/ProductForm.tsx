@@ -55,34 +55,44 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialProduct, onClose }) =>
   };
 
   const handleImageUpload = async () => {
-  if (image) {
-    setUploading(true);
-    const formData = new FormData();
-    formData.append("file", image);
-    formData.append("upload_preset", "your-upload-preset");
-
-    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-    const apiKey = process.env.CLOUDINARY_API_KEY;
-    const apiSecret = process.env.CLOUDINARY_API_SECRET;
-
-    const config = {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${btoa(`${apiKey}:${apiSecret}`)}`,
-      },
-    };
-
-    const response = await axios.post(
-      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-      formData,
-      config
-    );
-
-    const imageUrl = response.data.secure_url;
-    setImageUrl(imageUrl);
-    setUploading(false);
-  }
-};
+    if (image) {
+      setUploading(true);
+      const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET;
+      const formData = new FormData();
+      formData.append("file", image);
+      if (uploadPreset) {
+        formData.append("upload_preset", uploadPreset);
+      } else {
+        console.error("uploadPreset is not defined");
+      }
+  
+      const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+      const apiKey = process.env.CLOUDINARY_API_KEY;
+      const apiSecret = process.env.CLOUDINARY_API_SECRET;
+  
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Basic ${btoa(`${apiKey}:${apiSecret}`)}`,
+        },
+      };
+  
+      try {
+        const response = await axios.post(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          formData,
+          config
+        );
+  
+        const imageUrl = response.data.secure_url;
+        setImageUrl(imageUrl);
+        setUploading(false);
+      } catch (error) {
+        console.error(error);
+        setUploading(false);
+      }
+    }
+  };
 
   const onSubmit = async (data: Product) => {
     await handleImageUpload();

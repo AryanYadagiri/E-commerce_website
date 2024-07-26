@@ -11,9 +11,9 @@ export interface Product {
   sellerProfileId?: string;
 }
 
-export const fetchProducts = async (): Promise<Product[]> => {
-  const { data } = await axios.get("/api/products");
-  return data;
+export const fetchProducts = async (limit: number, offset: number) => {
+  const response = await axios.get(`/api/products?limit=${limit}&offset=${offset}`);
+  return response.data;
 };
 
 export const createProduct = async (

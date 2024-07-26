@@ -4,15 +4,18 @@ import { authOptions } from "../auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
+  const url = new URL(request.url);
+  const limit = parseInt(url.searchParams.get('limit') ?? '') || 3;
+  const offset = parseInt(url.searchParams.get('offset') ?? '') || 0;
   try {
-    const products = await prisma.product.findMany();
+    const products = await prisma.product.findMany({
+      take: limit,
+      skip: offset,
+    });
     return NextResponse.json(products, { status: 200 });
   } catch (error) {
     console.error("Error fetching products:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch products" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
   }
 }
 
@@ -36,7 +39,6 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     );
   }
-  console.log(name, description, price, quantity, sellerProfileId);
   try {
     await prisma.product.create({
       data: {
