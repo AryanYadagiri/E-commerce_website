@@ -6,7 +6,7 @@ const SellerDashboard = () => {
   return (
     <div>
       <SalesLineChart className="w-4/5 mx-auto"/>
-      <SellerProducts className="my-14 mx-3"/>
+      <SellerProducts className="my-14 mx-10"/>
     </div>
   );
 };
