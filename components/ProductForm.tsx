@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProduct, updateProduct, Product } from "@/lib/products";
 import axios from "axios";
+import Image from "next/image";
 
 interface ProductFormProps {
   onClose: () => void;
@@ -60,6 +61,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialProduct, onClose }) =>
       const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET;
       const formData = new FormData();
       formData.append("file", image);
+      console.log('uploadPreset',uploadPreset);
       if (uploadPreset) {
         formData.append("upload_preset", uploadPreset);
       } else {
@@ -86,6 +88,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialProduct, onClose }) =>
   
         const imageUrl = response.data.secure_url;
         setImageUrl(imageUrl);
+        console.log('Hello',imageUrl);
         setUploading(false);
       } catch (error) {
         console.error(error);
@@ -97,20 +100,21 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialProduct, onClose }) =>
   const onSubmit = async (data: Product) => {
     await handleImageUpload();
 
-    if (isEditing) {
-      updateMutation.mutate(data);
-    } else {
-      createMutation.mutate(data);
-    }
+    // if (isEditing) {
+    //   updateMutation.mutate(data);
+    // } else {
+    //   createMutation.mutate(data);
+    // }
   };
 
   return (
     <div className={`card lg:card-side bg-base-100 shadow-xl ${isEditing ? 'w-full' : 'w-2/4'}`}>
       <figure>
-        <img
+        {/* <img
           src={imageUrl}
           alt={watch("imageAlt")}
-        />
+        /> */}
+        <Image src={imageUrl} alt="profile" /> 
       </figure>
       <div className="card-body">
         <form onSubmit={handleSubmit(onSubmit)}>

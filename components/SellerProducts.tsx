@@ -46,6 +46,8 @@ const SellerProducts: React.FC<ClassNameProps> = ({className}) => {
     setIsCreating(false);
   };
 
+  console.log('products',products);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
