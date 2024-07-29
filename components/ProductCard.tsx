@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from "react";
-import { Product } from "@/app/api/products";
+import { Product } from "@/lib/products";
 import ProductForm from "./ProductForm";
 
 interface ProductCardProps {

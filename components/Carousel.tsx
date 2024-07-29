@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Card from "./Card";
 import { useQuery } from "@tanstack/react-query";
-import { Product, fetchProducts } from "@/app/api/products";
+import { Product, fetchProducts } from "@/lib/products";
 
 const Carousel = () => {
   const [activeSlide, setActiveSlide] = useState(0);

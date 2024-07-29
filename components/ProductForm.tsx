@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createProduct, updateProduct, Product } from "@/app/api/products";
+import { createProduct, updateProduct, Product } from "@/lib/products";
 import axios from "axios";
 
 interface ProductFormProps {

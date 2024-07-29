@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link';
-import { Product } from '@/app/api/products'
+import { Product } from '@/lib/products'
 
 interface CardProps {
   product: Product;

@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { fetchProducts, deleteProduct, createProduct, Product } from "@/app/api/products";
+import { fetchProducts, deleteProduct, createProduct, Product } from "@/lib/products";
 import ProductCard from "./ProductCard";
 import ProductForm from "./ProductForm";
 
