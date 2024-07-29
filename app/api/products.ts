@@ -11,8 +11,11 @@ export interface Product {
   sellerProfileId?: string;
 }
 
-export const fetchProducts = async (limit: number, offset: number) => {
-  const response = await axios.get(`/api/products?limit=${limit}&offset=${offset}`);
+export const fetchProducts = async (limit: number, offset: number, productId?: number) => {
+  const url = productId
+    ? `/api/products?productId=${productId}`
+    : `/api/products?limit=${limit}&offset=${offset}`;
+  const response = await axios.get(url);
   return response.data;
 };
 

@@ -61,9 +61,10 @@ export const authOptions: AuthOptions = {
     },
 
     async session({ session, token }) {
-      if (token && session.user) {
+      if (token && session.user && token.sub) {
         session.user.role = token.role;
-        if (token.role = "SELLER") {
+        session.user.id = token.sub;
+        if (token.role === "SELLER") {
           const sellerProfile = await prisma.sellerProfile.findUnique({
             where: { userId: token.sub },
           });

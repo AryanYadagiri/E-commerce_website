@@ -18,7 +18,7 @@ const SellerProducts: React.FC<ClassNameProps> = ({className}) => {
     isError,
   } = useQuery<Product[]>({
     queryKey: ["products"],
-    queryFn: fetchProducts,
+    queryFn: () => fetchProducts(3, 0),
   });
 
   const deleteMutation = useMutation<void, unknown, number>({

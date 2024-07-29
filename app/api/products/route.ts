@@ -5,17 +5,30 @@ import prisma from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
-  const limit = parseInt(url.searchParams.get('limit') ?? '') || 3;
-  const offset = parseInt(url.searchParams.get('offset') ?? '') || 0;
-  try {
-    const products = await prisma.product.findMany({
-      take: limit,
-      skip: offset,
-    });
-    return NextResponse.json(products, { status: 200 });
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
+  const productId = url.searchParams.get('productId');
+  if (productId) {
+    try {
+      const product = await prisma.product.findUnique({
+        where: { id: parseInt(productId) },
+      });
+      return NextResponse.json(product, { status: 200 });
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      return NextResponse.json({ error: "Failed to fetch product" }, { status: 500 });
+    }
+  } else {
+    const limit = parseInt(url.searchParams.get('limit') ?? '') || 3;
+    const offset = parseInt(url.searchParams.get('offset') ?? '') || 0;
+    try {
+      const products = await prisma.product.findMany({
+        take: limit,
+        skip: offset,
+      });
+      return NextResponse.json(products, { status: 200 });
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
+    }
   }
 }
 

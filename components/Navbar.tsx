@@ -32,7 +32,7 @@ const Navbar = () => {
               className="input input-bordered w-24 md:w-auto"
             />
           </div>
-          <TiShoppingCart className="text-5xl mx-2" />
+          <Link href={`shopping-cart/${session?.user.id}`}><TiShoppingCart className="text-5xl mx-2" /></Link>
         </div>
       )}
       <div className="flex-none gap-2">
@@ -65,7 +65,7 @@ const Navbar = () => {
                     </Link>
                   </li>
                   <li>
-                    <a onClick={()=>signOut({ callbackUrl: '/' })}>Logout</a>
+                    <a onClick={() => signOut({ callbackUrl: '/' })}>Logout</a>
                   </li>
                 </>
               ) : (
@@ -83,7 +83,7 @@ const Navbar = () => {
                     <Link href="/seller-signup">Become seller</Link>
                   </li>
                   <li>
-                    <a onClick={()=>signOut({ callbackUrl: '/' })}>Logout</a>
+                    <a onClick={() => signOut({ callbackUrl: '/' })}>Logout</a>
                   </li>
                 </>
               )
