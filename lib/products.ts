@@ -1,12 +1,13 @@
 import axios from "axios";
 
 export interface Product {
-  id: number;
+  id?: number;
+  image? : File;
   name: string;
   description: string;
   price: number;
   quantity: number;
-  imageUrl: string;
+  imageUrl?: string;
   imageAlt: string;
   sellerProfileId?: string;
 }

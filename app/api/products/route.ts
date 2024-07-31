@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
+import { NextApiRequest, NextApiResponse } from "next";
+import { uploadOnCloudinary } from "@/lib/cloudinary";
+import { upload } from "@/middleware";
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
