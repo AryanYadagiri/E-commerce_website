@@ -6,6 +6,7 @@ import Image from "next/image";
 
 interface ProductFormProps {
   onClose: () => void;
+  onSubmit: (updatedProduct: Omit<Product, "id">) => void;
   initialProduct?: Product;
 }
 

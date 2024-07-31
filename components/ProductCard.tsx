@@ -20,6 +20,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onDelete }
     setIsEditing(false);
   };
 
+  const handleDeleteClick = () => {
+    if (product.id !== undefined) {
+      onDelete(product.id);
+    }
+  };
+
   const handleSubmit = (updatedProduct: Omit<Product, "id">) => {
     const productWithId: Product = {...updatedProduct, id: product.id };
     onUpdate(productWithId);
@@ -44,7 +50,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onDelete }
               <button className="btn btn-primary" onClick={handleEditClick}>
                 Edit
               </button>
-              <button className="btn btn-danger" onClick={() => onDelete(product.id)}>
+              <button className="btn btn-danger" onClick={ handleDeleteClick}>
                 Delete
               </button>
             </div>
