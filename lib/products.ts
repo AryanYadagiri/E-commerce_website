@@ -20,13 +20,25 @@ export const fetchProducts = async (limit: number, offset: number, productId?: n
   return response.data;
 };
 
-export const createProduct = async (
-  product: Omit<Product, "id">
-): Promise<Product> => {
-  const { data } = await axios.post("/api/products", product);
-  return data;
-};
 
+
+export const createProduct = async (formData: FormData): Promise<Product> => {
+  try {
+    const { data } = await axios.post("/api/products", formData);
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Error creating product:', error.message);
+      if (error.response) {
+        console.error('Error response:', error.response.data);
+        console.error('Error response status:', error.response.status);
+      }
+    } else {
+      console.error('Error creating product:', error);
+    }
+    throw error;
+  }
+};
 export const updateProduct = async (product: Product): Promise<Product> => {
   const { data } = await axios.put(`/api/products/${product.id}`, product);
   return data;

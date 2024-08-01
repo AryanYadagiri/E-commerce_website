@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProduct, updateProduct, Product } from "@/lib/products";
@@ -17,7 +18,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const queryClient = useQueryClient();
   const isEditing = Boolean(initialProduct);
   const [image, setImage] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
+  const [uploading, setIsUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
 
   const {
@@ -28,6 +29,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     formState: { errors },
   } = useForm<Product>({
     defaultValues: initialProduct || {
+      image: undefined,
       name: "",
       description: "",
       price: 0,
@@ -36,17 +38,18 @@ const ProductForm: React.FC<ProductFormProps> = ({
     },
   });
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
-      const file = e.target.files[0];
-      const imageUrl = URL.createObjectURL(file);
-      setValue("imageUrl", imageUrl);
-      setValue("imageAlt", file.name);
-    }
-  };
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (e.target.files && e.target.files[0]) {
+  //     setImage(e.target.files[0]);
+  //     const file = e.target.files[0];
+  //     const imageUrl = URL.createObjectURL(file);
+  //     setValue("imageUrl", imageUrl);
+  //     setValue("imageAlt", file.name);
+  //   }
+  // };
 
   const onSubmit = async (data: Product) => {
+    console.log(image);
     const formData = new FormData();
     if (image) {
       formData.append("image", image);
@@ -58,7 +61,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     formData.append("imageAlt", data.name);
 
     const product: Product = {
-      image: data.image,
+      image: image ?? undefined,
       name: data.name,
       description: data.description,
       price: data.price,
@@ -69,11 +72,13 @@ const ProductForm: React.FC<ProductFormProps> = ({
     if (isEditing) {
       await updateProduct(product);
     } else {
-      await createProduct(product);
+      await createProduct(formData);
     }
 
     queryClient.invalidateQueries({ queryKey: ["products"] });
     onClose();
+
+    console.log(image);
   };
 
   return (
@@ -94,7 +99,12 @@ const ProductForm: React.FC<ProductFormProps> = ({
             <label className="label">Image</label>
             <input
               type="file"
-              onChange={handleImageChange}
+              name="image"
+              onChange={(e) => {
+                if (e.target.files) {
+                  setImage(e.target.files[0]);
+                }
+              }}
               className="file-input file-input-bordered"
             />
           </div>
