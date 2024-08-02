@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { Product } from "@/lib/products";
 import ProductForm from "./ProductForm";
@@ -9,7 +9,11 @@ interface ProductCardProps {
   onDelete: (id: number) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onDelete }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  onUpdate,
+  onDelete,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const handleEditClick = () => {
@@ -27,7 +31,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onDelete }
   };
 
   const handleSubmit = (updatedProduct: Omit<Product, "id">) => {
-    const productWithId: Product = {...updatedProduct, id: product.id };
+    const productWithId: Product = { ...updatedProduct, id: product.id };
     onUpdate(productWithId);
     setIsEditing(false);
   };
@@ -35,22 +39,30 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onUpdate, onDelete }
   return (
     <div className="card lg:card-side bg-base-100 shadow-xl">
       {isEditing ? (
-        <ProductForm initialProduct={product} onClose={handleCloseForm} onSubmit={handleSubmit} />
+        <ProductForm
+          initialProduct={product}
+          onClose={handleCloseForm}
+          onSubmit={handleSubmit}
+        />
       ) : (
         <>
           <figure>
-            <img src={product.imageUrl} alt={product.imageAlt} />
+            <img
+              src={product.imageUrl}
+              alt={product.imageAlt}
+              className="h-48 w-72"
+            />
           </figure>
           <div className="card-body">
-            <h2 className="card-title">{product.name}</h2>
-            <p>{product.description}</p>
+            <h2 className="card-title">Name: {product.name}</h2>
+            <p>Description: {product.description}</p>
             <p>Price: ${product.price}</p>
             <p>Quantity: {product.quantity}</p>
             <div className="card-actions justify-end">
               <button className="btn btn-primary" onClick={handleEditClick}>
                 Edit
               </button>
-              <button className="btn btn-danger" onClick={ handleDeleteClick}>
+              <button className="btn btn-danger" onClick={handleDeleteClick}>
                 Delete
               </button>
             </div>

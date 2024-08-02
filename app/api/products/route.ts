@@ -46,72 +46,6 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// export async function POST(request: NextRequest) {
-//   const session = await getServerSession(authOptions);
-//   const sellerProfileId = session?.user.sellerProfileId ?? "";
-//   const { name, description, price, quantity, image, imageAlt } =
-//     await request.json();
-//   if (
-//     !name ||
-//     !description ||
-//     price === undefined ||
-//     quantity === undefined ||
-//     image === undefined ||
-//     !imageAlt ||
-//     !sellerProfileId
-//   ) {
-//     console.log(name, description, price, quantity, imageAlt, image, sellerProfileId);
-//     return NextResponse.json(
-//       { error: "Missing required fields" },
-//       { status: 400 }
-//     );
-//   }
-//   const fileBuffer = await image.arrayBuffer();
-//   var mime = image.type;
-//   var encoding = "base64";
-//   var base64Data = Buffer.from(fileBuffer).toString("base64");
-//   var fileUri = "data:" + mime + ";" + encoding + "," + base64Data;
-
-//   try {
-//     const uploadToCloudinary = async () => {
-//       try {
-//         const result = await cloudinary.uploader.upload(fileUri, {
-//           invalidate: true,
-//           folder: "uploads",
-//         });
-//         console.log(result);
-//         return result;
-//       } catch (error) {
-//         console.log(error);
-//         throw error;
-//       }
-//     };
-
-//     const result = await uploadToCloudinary();
-
-//     let imageUrl: string = (result as { secure_url: string }).secure_url;
-//     await prisma.product.create({
-//       data: {
-//         name,
-//         description,
-//         price: parseFloat(price),
-//         quantity: parseInt(quantity),
-//         imageUrl,
-//         imageAlt,
-//         sellerProfileId: sellerProfileId,
-//       },
-//     });
-
-//     return NextResponse.json({ message: "Product created" }, { status: 201 });
-//   } catch (error) {
-//     console.error("Error creating product:", error);
-//     return NextResponse.json(
-//       { error: "Failed to create product" },
-//       { status: 500 }
-//     );
-//   }
-// }
-
 export async function POST(request: NextRequest) {
   const session = await getServerSession(authOptions);
   const sellerProfileId = session?.user.sellerProfileId ?? "";
@@ -120,9 +54,8 @@ export async function POST(request: NextRequest) {
   }
   const formData = await request.formData();
  
-  const image = formData.get("file") as File | null;
+  const image = formData.get("image") as File | null;
   if (!image) {
-    console.log("you are a loser")
     return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
   }
   const fileBuffer = await image.arrayBuffer();

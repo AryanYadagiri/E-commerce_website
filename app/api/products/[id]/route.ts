@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: String } }
@@ -15,7 +14,7 @@ export async function PUT(
     });
     return NextResponse.json({ status: 201 });
   } catch (error) {
-    NextResponse.json({ status: 500 });
+    return NextResponse.json({ status: 500 });
   }
 }
 
@@ -28,6 +27,6 @@ export async function DELETE(
     await prisma.product.delete({ where: { id: Number(id) } });
     return NextResponse.json({ status: 201 });
   } catch (error) {
-    NextResponse.json({ status: 500 });
+    return NextResponse.json({ status: 500 });
   }
 }

@@ -38,15 +38,15 @@ const ProductForm: React.FC<ProductFormProps> = ({
     },
   });
 
-  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (e.target.files && e.target.files[0]) {
-  //     setImage(e.target.files[0]);
-  //     const file = e.target.files[0];
-  //     const imageUrl = URL.createObjectURL(file);
-  //     setValue("imageUrl", imageUrl);
-  //     setValue("imageAlt", file.name);
-  //   }
-  // };
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]);
+      const file = e.target.files[0];
+      const imageUrl = URL.createObjectURL(file);
+      setValue("imageUrl", imageUrl);
+      setValue("imageAlt", file.name);
+    }
+  };
 
   const onSubmit = async (data: Product) => {
     console.log(image);
@@ -61,6 +61,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     formData.append("imageAlt", data.name);
 
     const product: Product = {
+      id: data.id,
       image: image ?? undefined,
       name: data.name,
       description: data.description,
@@ -100,11 +101,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             <input
               type="file"
               name="image"
-              onChange={(e) => {
-                if (e.target.files) {
-                  setImage(e.target.files[0]);
-                }
-              }}
+              onChange={handleImageChange}
               className="file-input file-input-bordered"
             />
           </div>
