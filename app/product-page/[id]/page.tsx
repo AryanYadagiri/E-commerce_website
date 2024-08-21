@@ -8,7 +8,6 @@ import { useSession } from "next-auth/react";
 
 const ProductPage = () => {
   const [quantity, setQuantity] = useState(0);
-  const session = useSession();
   const { id } = useParams();
   const {
     data: product,
@@ -37,8 +36,7 @@ const ProductPage = () => {
 
   const onAdd = async () => {
     const productId = Number(id);
-    const userId = session.data?.user.id ?? "";
-    addToCart(productId, userId, quantity);
+    addToCart(productId, quantity);
   };
 
   return (
@@ -48,7 +46,7 @@ const ProductPage = () => {
           <div className="md:flex-1 px-4">
             <div className="h-[460px] rounded-lg bg-gray-300 dark:bg-gray-700 mb-4">
               <img
-                className="w-full h-full object-cover"
+                className="w-full h-full"
                 src={product.imageUrl}
                 alt={product.imageAlt}
               />

@@ -12,6 +12,16 @@ export interface Product {
   sellerProfileId?: string;
 }
 
+export interface CartItem {
+  id: number;
+  userId: string;
+  productId: number;
+  quantity: number;
+  createdAt: string;
+  updatedAt: string;
+  product: Product;
+}
+
 export const fetchProducts = async (
   limit: number,
   offset: number,
@@ -52,14 +62,19 @@ export const deleteProduct = async (id: number): Promise<void> => {
 
 export const addToCart = async (
   productId: number,
-  userId: string,
   quantity: number
 ) => {
   try {
-    const cartItem = { productId, userId, quantity };
+    const cartItem = { productId, quantity };
     const { data } = await axios.post("/api/cart", cartItem);
     return data;
   } catch (error) {
     console.log("error: ", error);
   }
 };
+
+export const fetchCartItems = async () => {
+  const response = await axios.get("/api/cart")
+  console.log(response.data)
+  return response.data
+}
